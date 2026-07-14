@@ -1,6 +1,6 @@
 from settings._base import BaseSettingsConfig
 
-__all__ = ['BotSettings']
+__all__ = ["BotSettings"]
 
 
 class BotSettings(BaseSettingsConfig, env_prefix="BOT_"):

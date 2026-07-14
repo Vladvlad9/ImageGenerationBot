@@ -5,6 +5,7 @@ __all__ = ['BaseSettingsConfig']
 
 class BaseSettingsConfig(BaseSettings):
     model_config = SettingsConfigDict(
+        env_file=".env",
         frozen=True,
         case_sensitive=False,
         str_strip_whitespace=True,
