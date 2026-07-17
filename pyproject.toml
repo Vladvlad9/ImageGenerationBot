@@ -9,4 +9,6 @@ dependencies = [
     "openai>=2.45.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.2",
+    "taskiq>=0.12.4",
+    "taskiq-redis>=1.2.3",
 ]

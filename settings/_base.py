@@ -11,4 +11,5 @@ class BaseSettingsConfig(BaseSettings):
         str_strip_whitespace=True,
         coerce_numbers_to_str=True,
         use_enum_values=True,
+        extra="ignore",
     )
