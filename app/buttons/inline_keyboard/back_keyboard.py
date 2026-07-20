@@ -1,7 +1,8 @@
 from aiogram import types
 
-from app.buttons.constants import ButtonCallback, ButtonText
+from app.buttons.constants import ButtonText
 from app.buttons.inline_keyboard.builder import Button, InlineKeyboard
+from src.enums.button_callbacks import ButtonCallback
 
 __all__ = ["back_keyboard"]
 

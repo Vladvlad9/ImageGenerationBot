@@ -12,8 +12,7 @@ async def profile(callback: CallbackQuery):
     username: str = callback.from_user.username
     token: int = 0
 
-    await callback.message.delete()
-    await callback.message.answer(
+    await callback.message.edit_text(
         text=f"📊 Мой профиль\n\n "
              f"👤 Имя: {username}\n"
              f"🔹 Баланс: {token} токенов\n\n"
