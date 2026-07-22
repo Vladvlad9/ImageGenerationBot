@@ -1,0 +1,17 @@
+from src.types.base import ImmutableDTO
+
+__all__ = ["UserSettingsCreateDTO", "UserSettingsBaseDTO"]
+
+
+class UserSettingsBaseDTO(ImmutableDTO):
+    image_aspect_ratio: str
+    image_quality: str
+    language: str
+    notify_on_finish: bool
+
+
+class UserSettingsCreateDTO(ImmutableDTO):
+    image_aspect_ratio: str = "1:1"
+    image_quality: str = "auto"
+    language: str = "ru"
+    notify_on_finish: bool = True

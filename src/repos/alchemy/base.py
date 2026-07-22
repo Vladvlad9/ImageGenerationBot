@@ -23,7 +23,20 @@ class BaseRepo(ABC, Generic[ModelType]):
         return await self._session.scalar(statement)
 
     async def insert(self, obj: dict) -> ModelType:
-        statement = insert(self._model).values(**obj).returning(self._model)
-        result = await self._session.execute(statement)
-        await self._session.commit()
-        return result.scalar_one_or_none()
+        try:
+            statement = insert(self._model).values(**obj).returning(self._model)
+            result = await self._session.execute(statement)
+            await self._session.commit()
+            return result.scalar_one_or_none()
+        except Exception:
+            await self._session.rollback()
+            raise
+
+    async def add(self, obj: ModelType) -> ModelType:
+        try:
+            self._session.add(obj)
+            await self._session.commit()
+            return obj
+        except Exception:
+            await self._session.rollback()
+            raise

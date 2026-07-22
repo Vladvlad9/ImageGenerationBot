@@ -1,10 +1,8 @@
-from uuid_utils import uuid7
-
-from sqlalchemy import UUID
+from sqlalchemy import BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 __all__ = ["IDMixin"]
 
 
 class IDMixin:
-    id: Mapped[UUID] = mapped_column(UUID, primary_key=True, default=uuid7)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, primary_key=True, unique=True, index=True)

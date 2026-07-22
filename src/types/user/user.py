@@ -1,4 +1,5 @@
 from src.types.base import ImmutableDTO
+from src.types.user.user_settings import UserSettingsBaseDTO
 
 __all__ = ["UserResponseIdDTO", "UserDTO", "UserCreateDTO"]
 
@@ -13,6 +14,8 @@ class UserDTO(UserResponseIdDTO):
     last_name: str | None
     token_balance: int
     tokens_spent: int
+
+    settings: UserSettingsBaseDTO | None
 
 
 class UserCreateDTO(UserResponseIdDTO):
