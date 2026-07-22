@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.database.alchemy.models import User
 from src.repos.alchemy import UserRepo
 from src.types.user import UserCreateDTO, UserDTO
 
@@ -12,7 +13,7 @@ class UserServices:
         self._repo = UserRepo(session=session)
 
     async def get(self, telegram_id: int):
-        pass
+        return await self._repo.get(filters=[User.telegram_id == telegram_id])
 
     async def create(self, data: UserCreateDTO):
         try:

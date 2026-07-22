@@ -8,14 +8,14 @@ class UserResponseIdDTO(ImmutableDTO):
 
 
 class UserDTO(UserResponseIdDTO):
-    username: str
-    first_name: str
-    last_name: str
+    username: str | None
+    first_name: str | None
+    last_name: str | None
     token_balance: int
     tokens_spent: int
 
 
 class UserCreateDTO(UserResponseIdDTO):
-    username: str
-    first_name: str
-    last_name: str
+    username: str | None
+    first_name: str | None
+    last_name: str | None
