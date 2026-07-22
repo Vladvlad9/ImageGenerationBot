@@ -1,27 +1,31 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.buttons.inline_keyboard import start_keyboard
 from src.enums.button_callbacks import ButtonCallback
 from src.services.user import UserServices
+from src.types.user import UserCreateDTO
 
 router = Router(name="start")
 
 
 @router.message(CommandStart())
-async def cmd_start_command(message: Message, session: AsyncSession):
-    user = await UserServices(session=session).get(message.from_user.id)
-    if user:
-        await message.answer(
-            text="🥳 Добро пожаловать!",
-            reply_markup=start_keyboard()
+async def cmd_start_command(message: Message, service: UserServices):
+    user = await service.get(telegram_id=message.from_user.id)
+    if not user:
+        user_data = UserCreateDTO(
+            telegram_id=message.from_user.id,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+            username=message.from_user.username,
         )
-    else:
-        await message.answer("Тебя нету в БД")
+        await service.create(data=user_data)
 
-
+    await message.answer(
+        text="🥳 Добро пожаловать!",
+        reply_markup=start_keyboard()
+    )
 
 
 @router.callback_query(F.data == ButtonCallback.BACK)

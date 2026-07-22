@@ -2,9 +2,10 @@ from datetime import datetime
 
 from sqlalchemy import TIMESTAMP
 from sqlalchemy.orm import declarative_mixin, Mapped, mapped_column
-from sqlalchemy.sql.functions import now
+from src.utils import now
 
 __all__ = ["LifecycleMixin"]
+
 
 
 @declarative_mixin

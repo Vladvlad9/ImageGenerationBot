@@ -3,19 +3,19 @@ from aiogram.types import CallbackQuery
 
 from app.buttons.inline_keyboard import back_keyboard
 from src.enums.button_callbacks import ButtonCallback
+from src.services.user import UserServices
 
 router = Router(name="profile")
 
 
 @router.callback_query(F.data == ButtonCallback.PROFILE)
-async def profile(callback: CallbackQuery):
-    username: str = callback.from_user.username
-    token: int = 0
+async def profile(callback: CallbackQuery, service: UserServices):
+    user = await service.get(telegram_id=callback.from_user.id)
 
     await callback.message.edit_text(
         text=f"📊 Мой профиль\n\n "
-             f"👤 Имя: {username}\n"
-             f"🔹 Баланс: {token} токенов\n\n"
-             f"🔸 Потрачено: {token} токенов",
+             f"👤 Имя: {user.username}\n"
+             f"🔹 Баланс: {user.token_balance} токенов\n\n"
+             f"🔸 Потрачено: {user.tokens_spent} токенов",
         reply_markup=back_keyboard(),
     )

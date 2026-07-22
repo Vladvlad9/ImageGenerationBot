@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from app import router
+from app.middlewares.user import UserMiddleware
 from settings import settings
 
 bot = Bot(token=settings.BOT.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -14,6 +15,7 @@ dp = Dispatcher(bot=bot, storage=storage)
 
 
 async def main() -> None:
+    dp.update.middleware(UserMiddleware())
     dp.include_routers(router)
 
     await bot.delete_webhook(drop_pending_updates=True)

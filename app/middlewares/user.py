@@ -5,7 +5,6 @@ from aiogram.types import TelegramObject
 
 from src.config import alchemy_db_connection
 from src.services.user import UserServices
-from src.types.user import UserCreateDTO
 
 
 class UserMiddleware(BaseMiddleware):
@@ -15,5 +14,7 @@ class UserMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: dict[str, Any],
     ) -> Any:
-        user = data.get("event_from_user")
-        pass
+        async with alchemy_db_connection.session_maker() as session:
+            data["session"] = session
+            data["service"] = UserServices(session=session)
+            return await handler(event, data)
