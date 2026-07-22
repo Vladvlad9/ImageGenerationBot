@@ -6,25 +6,7 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
     volumes:
-      - .:/app
-    develop:
-      watch:
-        - action: sync+restart
-          path: .
-          target: /app
-          ignore:
-            - .venv/
-            - .git/
-            - __pycache__/
-            - .env
-            - pyproject.toml
-            - uv.lock
-            - generated/
-            - result.png
-        - action: rebuild
-          path: pyproject.toml
-        - action: rebuild
-          path: uv.lock
+      - ./:/opt
     depends_on:
       redis:
         condition: service_healthy
