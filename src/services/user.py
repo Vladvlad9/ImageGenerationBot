@@ -5,10 +5,9 @@ from sqlalchemy.orm import joinedload
 from src.database.alchemy.models import User, UserSettings
 from src.repos.alchemy import UserRepo
 from src.types.user import UserCreateDTO, UserDTO
+from src.types.user.user_settings import UserSettingsCreateDTO
 
 __all__ = ["UserServices"]
-
-from src.types.user.user_settings import UserSettingsCreateDTO
 
 
 class UserServices:

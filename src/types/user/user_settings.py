@@ -1,6 +1,6 @@
 from src.types.base import ImmutableDTO
 
-__all__ = ["UserSettingsCreateDTO", "UserSettingsBaseDTO"]
+__all__ = ["UserSettingsCreateDTO", "UserSettingsUpdateDTO", "UserSettingsBaseDTO"]
 
 
 class UserSettingsBaseDTO(ImmutableDTO):
@@ -15,3 +15,10 @@ class UserSettingsCreateDTO(ImmutableDTO):
     image_quality: str = "auto"
     language: str = "ru"
     notify_on_finish: bool = True
+
+
+class UserSettingsUpdateDTO(ImmutableDTO):
+    image_aspect_ratio: str | None = None
+    image_quality: str | None = None
+    language: str | None = None
+    notify_on_finish: bool | None = None

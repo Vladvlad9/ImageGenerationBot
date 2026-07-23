@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Generic, TypeVar, Any
 
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
@@ -40,3 +40,13 @@ class BaseRepo(ABC, Generic[ModelType]):
         except Exception:
             await self._session.rollback()
             raise
+
+    async def update(self, filters: list[Any], obj: dict) -> ModelType:
+        result = await self._session.execute(
+            statement=update(self._model)
+            .filter(*filters)
+            .values(**obj)
+            .returning(self._model)
+        )
+        await self._session.commit()
+        return result.scalar_one_or_none()

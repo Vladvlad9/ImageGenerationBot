@@ -1,5 +1,5 @@
 from src.types.user.user import UserResponseIdDTO, UserDTO, UserCreateDTO
-from src.types.user.user_settings import UserSettingsBaseDTO
+from src.types.user.user_settings import UserSettingsBaseDTO, UserSettingsUpdateDTO
 
 __all__ = [
     # USER
@@ -9,4 +9,5 @@ __all__ = [
 
     # USER_SETTINGS
     "UserSettingsBaseDTO",
+    "UserSettingsUpdateDTO",
 ]
