@@ -8,7 +8,6 @@ from src.chatGPT.image_service import build_image_generation_service
 from src.enums import ImageAspectRatio
 from src.enums.button_callbacks import ButtonCallback
 from src.enums.image_quality import ImageQuality
-from src.services.image_storage import store_generated_image
 from src.services.user import UserServices
 from src.types import ImageGenerationProtocol, InlineKeyboardProtocol
 
@@ -90,11 +89,12 @@ async def prompt(message: Message, state: FSMContext, service: UserServices):
 
     stored_image = None
     try:
-        stored_image = await store_generated_image(
-            image_bytes=image_bytes,
-            telegram_id=message.from_user.id,
-            prompt=prompt_text,
-        )
+        pass
+        # stored_image = await store_generated_image(
+        #     image_bytes=image_bytes,
+        #     telegram_id=message.from_user.id,
+        #     prompt=prompt_text,
+        # )
     except Exception:
         stored_image = None
 
