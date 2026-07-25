@@ -4,13 +4,13 @@ from typing import Annotated
 from pydantic import Field
 
 from settings._base import BaseSettingsConfig
+from settings.storage import StorageSettings
 from settings.database import DataBaseSettings
 from settings.gpt import GPTSettings
 from settings.bot import BotSettings
+from settings.redis import RedisSettings
 
 __all__ = ['settings']
-
-from settings.redis import RedisSettings
 
 
 class Settings(BaseSettingsConfig):
@@ -20,6 +20,7 @@ class Settings(BaseSettingsConfig):
     GPT: Annotated[GPTSettings, Field(default_factory=GPTSettings)]
     DATABASE: Annotated[DataBaseSettings, Field(default_factory=DataBaseSettings)]
     REDIS: Annotated[RedisSettings, Field(default_factory=RedisSettings)]
+    STORAGE: Annotated[StorageSettings, Field(default_factory=StorageSettings)]
 
 
 settings = Settings()

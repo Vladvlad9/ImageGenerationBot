@@ -10,3 +10,6 @@ class ButtonCallback(StrEnum):
     BACK = "back"
     QUALITY = "quality"
     FORMAT = "format"
+
+    TEST_CHAT_GPT = "test_chat_gpt"
+    EXAMPLE_WORKS = "example_works"

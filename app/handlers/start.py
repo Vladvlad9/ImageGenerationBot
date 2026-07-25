@@ -30,7 +30,8 @@ async def cmd_start_command(message: Message, service: UserServices):
 
 @router.callback_query(F.data == ButtonCallback.BACK)
 async def back_to_start(callback: CallbackQuery):
-    await callback.message.edit_text(
+    await callback.message.delete()
+    await callback.message.answer(
         text="🥳 Добро пожаловать!",
         reply_markup=start_keyboard()
     )
