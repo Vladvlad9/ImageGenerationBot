@@ -20,6 +20,12 @@ class User(Base, IDMixin, LifecycleMixin, SoftDeleteMixin):
     token_balance: Mapped[int] = mapped_column(default=0)
     tokens_spent: Mapped[int] = mapped_column(default=0)
 
+    payments: Mapped[list["Payment"]] = relationship(
+        "Payment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
     settings: Mapped["UserSettings | None"] = relationship(
         "UserSettings",
         back_populates="user",

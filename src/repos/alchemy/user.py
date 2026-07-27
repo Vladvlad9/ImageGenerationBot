@@ -66,3 +66,21 @@ class UserRepo(BaseRepo[User]):
         except Exception:
             await self._session.rollback()
             raise
+
+    async def add_tokens(self, telegram_id: int, tokens: int) -> int | None:
+        """Atomically add purchased tokens to the user's balance.
+
+        Returns the new balance, or None if the user doesn't exist.
+        """
+        try:
+            result = await self._session.execute(
+                update(User)
+                .where(User.telegram_id == telegram_id)
+                .values(token_balance=User.token_balance + tokens)
+                .returning(User.token_balance)
+            )
+            await self._session.commit()
+            return result.scalar_one_or_none()
+        except Exception:
+            await self._session.rollback()
+            raise

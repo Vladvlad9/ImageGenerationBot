@@ -10,6 +10,7 @@ from .payment import payment_router
 from .payment import telegram_star_router
 from .payment import promo_code_router
 from .payment import crypto_router
+from .payment import refund_router
 
 router = Router(name='root')
 
@@ -23,3 +24,4 @@ router.include_router(payment_router)
 router.include_router(telegram_star_router)
 router.include_router(promo_code_router)
 router.include_router(crypto_router)
+router.include_router(refund_router)

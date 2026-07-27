@@ -75,3 +75,12 @@ class UserServices:
             telegram_id=telegram_id,
             tokens=tokens,
         )
+
+    async def add_tokens(self, telegram_id: int, tokens: int) -> int | None:
+        if tokens <= 0:
+            return None
+
+        return await self._repo.add_tokens(
+            telegram_id=telegram_id,
+            tokens=tokens,
+        )
