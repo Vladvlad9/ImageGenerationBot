@@ -7,6 +7,7 @@ from app.buttons.inline_keyboard import back_keyboard
 from app.buttons.pagination import style_pagination_keyboard
 from app.states import ImageStates
 from settings import settings
+from src.chatGPT.image_service import format_image_generation_tokens, format_image_generation_cost
 from src.enums import ButtonCallback
 from src.services.style import StyleServices
 from src.services.style_image_generation import NotEnoughTokensError, StyleImageGenerationService
@@ -91,10 +92,11 @@ async def generate_image_by_style(
             filename="generated.png",
         ),
         caption=(
-            f"Готово.\n"
-            f"Изображение хранится только у тебя в боте, после 'Очистки истории' все изображения пропадут."
-            # f"{format_image_generation_tokens(result.usage)}"
-            # f"{format_image_generation_cost(result.cost_usd)}"
+            f"Готово.\n\n"
+            f"Изображение хранится только у тебя в боте, "
+            f"после 'Очистки истории' все изображения ПРОПАДУТ.\n\n"
+            f"{format_image_generation_tokens(result.usage)}"
+            f"{format_image_generation_cost(result.cost_usd)}"
             f"{format_remaining_token_balance(result.remaining_token_balance)}"
         ),
     )
@@ -136,6 +138,7 @@ async def show_example_work(
 
     storage = StorageAppWrite(bucket_id=settings.STORAGE.BUCKET_ID)
     photo = await storage.get_file_url(file_id=style.file_id)
+
     caption = style.caption or (
         "<b>Использовать этот стиль</b>\n"
         "Пришли изображение своего героя\n\n"

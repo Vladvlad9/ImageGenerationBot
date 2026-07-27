@@ -22,6 +22,7 @@ class UserServices:
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name,
             username=message.from_user.username,
+            token_balance=5_000
         )
 
     @staticmethod

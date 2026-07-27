@@ -15,7 +15,7 @@ async def profile(callback: CallbackQuery, service: UserServices):
     await callback.message.edit_text(
         text=f"📊 Мой профиль\n\n "
              f"👤 Имя: {user.username}\n\n"
-             f"🔹 Баланс: {user.token_balance} токенов\n"
-             f"🔸 Потрачено: {user.tokens_spent} токенов",
+             f"🔹 Баланс: {user.token_balance:,.0f} токенов\n"
+             f"🔸 Потрачено: {user.tokens_spent:,.0f} токенов",
         reply_markup=back_keyboard(),
     )

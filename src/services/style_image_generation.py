@@ -10,10 +10,7 @@ from src.enums import ImageAspectRatio, ImageQuality
 from src.services.user import UserServices
 from src.storage.storage import StorageAppWrite
 
-MIN_STYLE_IMAGE_GENERATION_TOKENS = 10_000
-
 __all__ = [
-    "MIN_STYLE_IMAGE_GENERATION_TOKENS",
     "NotEnoughTokensError",
     "StyleImageGenerationResult",
     "StyleImageGenerationService",
@@ -60,6 +57,8 @@ class StyleImageGenerationService:
         user = await self._user_service.get(telegram_id=telegram_id)
         self._validate_token_balance(user=user)
 
+        remaining_token_balance = await self._spend_generation_tokens(telegram_id=telegram_id)
+
         user_image_bytes = await self._download_telegram_photo(file_id=telegram_photo_file_id)
         style_image_bytes = await self._storage.get_file_view(file_id=style_file_id)
 
@@ -71,10 +70,6 @@ class StyleImageGenerationService:
             image_bytes=user_image_bytes,
             style_image_bytes=style_image_bytes,
             style_prompt=style_prompt,
-        )
-        remaining_token_balance = await self._spend_generation_tokens(
-            telegram_id=telegram_id,
-            usage=image_generator.last_usage,
         )
 
         return StyleImageGenerationResult(
@@ -108,17 +103,14 @@ class StyleImageGenerationService:
     @staticmethod
     def _validate_token_balance(user: Any | None) -> None:
         token_balance = user.token_balance if user and user.token_balance is not None else 0
-        if token_balance < MIN_STYLE_IMAGE_GENERATION_TOKENS:
+        if token_balance < settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS:
             raise NotEnoughTokensError(
                 current_balance=token_balance,
-                required_balance=MIN_STYLE_IMAGE_GENERATION_TOKENS,
+                required_balance=settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS,
             )
 
-    async def _spend_generation_tokens(self, telegram_id: int, usage: Any | None) -> int | None:
-        if usage is None:
-            return None
-
+    async def _spend_generation_tokens(self, telegram_id: int) -> int | None:
         return await self._user_service.spend_tokens(
             telegram_id=telegram_id,
-            tokens=MIN_STYLE_IMAGE_GENERATION_TOKENS,
+            tokens=settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS,
         )

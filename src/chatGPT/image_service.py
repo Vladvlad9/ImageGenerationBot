@@ -211,12 +211,10 @@ class ImageGenerationService:
             style_image_bytes: bytes,
             style_prompt: str | None = None,
     ) -> bytes:
-        prompt = (
-            "Transform the first image into the visual style of the second reference image. "
-            "Keep the main subject, pose, identity, and composition from the first image. "
-            "Use the second image only as a style reference: colors, lighting, rendering, texture, mood, "
-            "and overall artistic treatment."
-        )
+        prompt = ("Use the first image with the white background as the base for the composition and visual style. Preserve the white background, black-and-white manga aesthetic, fine ink linework, cross-hatching, contrast, placement of all elements, floating leaves, and the character on the right exactly as they are."
+                  "Replace only the character on the left with the character from the second image with the blue background. Accurately preserve the character’s recognizable design: the elongated white bone-like helmet with horns and sharp projections, light layered armor, long purple ribbons, and the large blade held in their hands. Redraw this character in the highly detailed black-and-white manga style of the first image, using fine ink lines, cross-hatching, and deep black shadows instead of color and glowing effects."
+                  "Place the new character on the left in approximately the same position and at the same scale as the original left character. Show the character in side profile, turned to the right and facing the character on the right. Preserve natural anatomy and the important details of the armor, helmet, ribbons, and weapon. Remove the blue background, colored lighting, smoke, and game-like visual effects from the second image. Do not change anything else in the first image. Wide horizontal composition, high resolution, crisp professional manga illustration."
+                  "Negative prompt: colored image, blue background, purple background, 3D render, video-game graphics, neon glow, blur, altered right character, changed composition, additional characters, extra limbs, deformed hands, incorrect weapon, cropped head, text, logo, watermark.")
         if style_prompt:
             prompt = f"{prompt}\nAdditional style instruction: {style_prompt}"
 
