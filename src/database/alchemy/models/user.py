@@ -38,3 +38,11 @@ class User(Base, TelegramIDMixin, LifecycleMixin, SoftDeleteMixin):
         cascade="all, delete-orphan",
         uselist=False,
     )
+
+    def __repr__(self) -> str:
+        return (
+            f"<User(id={self.telegram_id}, code={self.username}>"
+        )
+
+    def __str__(self) -> str:
+        return f"User id={self.telegram_id}, code={self.username}"

@@ -12,3 +12,11 @@ class Style(Base, LifecycleMixin, SoftDeleteMixin):
 
     caption: Mapped[str | None] = mapped_column(String(1024))
     prompt: Mapped[str | None] = mapped_column(String(5024))
+
+    def __repr__(self) -> str:
+        return (
+            f"<Style(id={self.file_id}>"
+        )
+
+    def __str__(self) -> str:
+        return f"Style code={self.file_id}"

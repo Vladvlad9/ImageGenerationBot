@@ -25,3 +25,11 @@ class UserSettings(Base, LifecycleMixin):
         "User",
         back_populates="settings",
     )
+
+    def __repr__(self) -> str:
+        return (
+            f"<UserSettings(id={self.telegram_id})>"
+        )
+
+    def __str__(self) -> str:
+        return f"UserSettings id={self.telegram_id}"

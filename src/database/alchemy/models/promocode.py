@@ -46,8 +46,7 @@ class PromoCode(Base, IDMixin, LifecycleMixin):
 
     def __repr__(self) -> str:
         return (
-            f"<PromoCode(id={self.id}, code={self.code}, "
-            f"type={self.type}, status={self.status})>"
+            f"<PromoCode(id={self.id}, code={self.code}, status={self.status})>"
         )
 
     def __str__(self) -> str:
