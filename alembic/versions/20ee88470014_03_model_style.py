@@ -24,7 +24,7 @@ def upgrade() -> None:
     op.create_table('style',
     sa.Column('file_id', sa.String(length=32), nullable=False),
     sa.Column('caption', sa.String(length=1024), nullable=True),
-    sa.Column('prompt', sa.String(length=1024), nullable=True),
+    sa.Column('prompt', sa.String(length=5024), nullable=True),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False, comment='Date of created'),
     sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False, comment='Date of last updated'),
     sa.Column('deleted_at', sa.TIMESTAMP(timezone=True), nullable=True),
