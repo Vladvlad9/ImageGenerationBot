@@ -12,8 +12,8 @@ class UserDTO(UserResponseIdDTO):
     username: str | None
     first_name: str | None
     last_name: str | None
-    token_balance: int
-    tokens_spent: int
+    token_balance: int | None
+    tokens_spent: int | None
 
     settings: UserSettingsBaseDTO | None
 

@@ -1,3 +1,4 @@
+from aiogram.types import Message
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -13,6 +14,19 @@ __all__ = ["UserServices"]
 class UserServices:
     def __init__(self, session: AsyncSession):
         self._repo = UserRepo(session=session)
+
+    @staticmethod
+    async def user_data(message: Message) -> UserCreateDTO:
+        return UserCreateDTO(
+            telegram_id=message.from_user.id,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+            username=message.from_user.username,
+        )
+
+    @staticmethod
+    async def update_token_balance(current_balance:int, new_balance: int):
+        pass
 
     async def get(self, telegram_id: int) -> UserDTO | None:
         filters = [User.telegram_id == telegram_id]

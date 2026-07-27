@@ -7,8 +7,6 @@ from appwrite.services.storage import Storage
 from settings import settings
 import logging
 
-# 6a634bf00009d5dc1411
-
 logger = logging.getLogger(__name__)
 
 __all__ = ["StorageAppWrite"]
@@ -35,6 +33,18 @@ class StorageAppWrite:
         except AppwriteException:
             logger.exception(
                 "Failed to get file view: bucket=%s, file=%s",
+                self.bucket_id,
+                file_id,
+            )
+            raise
+
+    async def get_file_url(self, file_id: str) -> str:
+        try:
+            return (f"{settings.STORAGE.ENDPOINT}/storage/buckets/"
+                    f"{settings.STORAGE.BUCKET_ID}/files/{file_id}/view?project={settings.STORAGE.PROJECT}")
+        except AppwriteException:
+            logger.exception(
+                "Failed to get file view url: bucket=%s, file=%s",
                 self.bucket_id,
                 file_id,
             )

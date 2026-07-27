@@ -5,3 +5,4 @@ __all__ = ['ImageStates']
 
 class ImageStates(StatesGroup):
     prompt = State()
+    style_photo = State()
