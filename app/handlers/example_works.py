@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Bot, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import BufferedInputFile, CallbackQuery, InputMediaPhoto, Message
@@ -10,11 +12,16 @@ from settings import settings
 from src.chatGPT.image_service import format_image_generation_tokens, format_image_generation_cost
 from src.enums import ButtonCallback
 from src.services.style import StyleServices
-from src.services.style_image_generation import NotEnoughTokensError, StyleImageGenerationService
+from src.services.style_image_generation import (
+    ImageGenerationFailedError,
+    NotEnoughTokensError,
+    StyleImageGenerationService,
+)
 from src.services.user import UserServices
 from src.storage.storage import StorageAppWrite
 
 router = Router(name="example_works")
+logger = logging.getLogger(__name__)
 
 
 def format_remaining_token_balance(balance: int | None) -> str:
@@ -79,8 +86,26 @@ async def generate_image_by_style(
             reply_markup=back_keyboard()
         )
         return
+    except ImageGenerationFailedError as e:
+        logger.exception(
+            "Image generation failed: telegram_id=%s",
+            message.from_user.id,
+        )
+        if e.refunded:
+            text = (
+                "Не получилось обработать изображение через ChatGPT. "
+                "Токены за этот запрос вернули на баланс — попробуй ещё раз чуть позже."
+                f"{format_remaining_token_balance(e.remaining_token_balance)}"
+            )
+        else:
+            text = (
+                "Не получилось обработать изображение через ChatGPT, а вернуть токены "
+                "на баланс тоже не вышло. Напиши в поддержку — разберёмся вручную."
+            )
+        await status_message.edit_text(text, reply_markup=back_keyboard())
+        return
     except Exception as e:
-        print(f"ERROR: {e}")
+        logger.exception("Unexpected error in generate_image_by_style: telegram_id=%s", message.from_user.id)
         await status_message.edit_text(
             "Не получилось обработать изображение через ChatGPT. Попробуй чуть позже."
         )
