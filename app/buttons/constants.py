@@ -10,3 +10,8 @@ class ButtonText:
     QUALITY = "⚙️ Выбрать качество"
     FORMAT = "📐 Изменить формат"
     EXAMPLE_WORKS = "Стили работ"
+    PAYMENTS = "Оплата"
+
+    TELEGRAM = "⭐ Telegram Stars"
+    CRYPTO = "💸 Крипта"
+    PROMO_CODE = "🎫 Промокод"

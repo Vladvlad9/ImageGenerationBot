@@ -7,11 +7,11 @@ from src.enums.button_callbacks import ButtonCallback
 __all__ = ["back_keyboard"]
 
 
-def back_keyboard() -> types.InlineKeyboardMarkup:
+def back_keyboard(callback_data: str = ButtonCallback.BACK) -> types.InlineKeyboardMarkup:
     return InlineKeyboard(
         buttons=[
             [
-                Button(text=ButtonText.BACK, callback_data=ButtonCallback.BACK),
+                Button(text=ButtonText.BACK, callback_data=callback_data),
             ],
         ],
     ).build()

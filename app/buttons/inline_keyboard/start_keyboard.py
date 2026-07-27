@@ -11,12 +11,14 @@ def start_keyboard() -> types.InlineKeyboardMarkup:
     return InlineKeyboard(
         buttons=[
             [
-                # Button(text=ButtonText.GENERATE, callback_data=ButtonCallback.GENERATE),
                 Button(text=ButtonText.EXAMPLE_WORKS, callback_data=ButtonCallback.EXAMPLE_WORKS),
             ],
             [
                 Button(text=ButtonText.HELP, callback_data=ButtonCallback.HELP),
                 Button(text=ButtonText.PROFILE, callback_data=ButtonCallback.PROFILE),
             ],
+            [
+                Button(text=ButtonText.PAYMENTS, callback_data=ButtonCallback.PAYMENTS),
+            ]
         ],
     ).build()

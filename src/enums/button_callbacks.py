@@ -13,3 +13,8 @@ class ButtonCallback(StrEnum):
 
     TEST_CHAT_GPT = "test_chat_gpt"
     EXAMPLE_WORKS = "example_works"
+    PAYMENTS = "payments"
+
+    TELEGRAM = "telegram_stars"
+    CRYPTO = "crypto_payments"
+    PROMO_CODE = "promo_code"
