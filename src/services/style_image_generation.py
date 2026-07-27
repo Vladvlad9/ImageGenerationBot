@@ -9,6 +9,7 @@ from src.chatGPT.image_service import build_image_generation_service
 from src.enums import ImageAspectRatio, ImageQuality
 from src.services.user import UserServices
 from src.storage.storage import StorageAppWrite
+from src.types.user import UserDTO
 
 __all__ = [
     "NotEnoughTokensError",
@@ -101,7 +102,7 @@ class StyleImageGenerationService:
         return ImageQuality.LOW
 
     @staticmethod
-    def _validate_token_balance(user: Any | None) -> None:
+    def _validate_token_balance(user: UserDTO) -> None:
         token_balance = user.token_balance if user and user.token_balance is not None else 0
         if token_balance < settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS:
             raise NotEnoughTokensError(
