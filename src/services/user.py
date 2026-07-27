@@ -25,8 +25,8 @@ class UserServices:
         )
 
     @staticmethod
-    async def update_token_balance(current_balance:int, new_balance: int):
-        pass
+    async def update_token_balance(current_balance: int, new_balance: int) -> int:
+        return current_balance - new_balance
 
     async def get(self, telegram_id: int) -> UserDTO | None:
         filters = [User.telegram_id == telegram_id]
@@ -56,3 +56,12 @@ class UserServices:
 
     async def delete(self):
         pass
+
+    async def spend_tokens(self, telegram_id: int, tokens: int) -> int | None:
+        if tokens <= 0:
+            return None
+
+        return await self._repo.spend_tokens(
+            telegram_id=telegram_id,
+            tokens=tokens,
+        )
