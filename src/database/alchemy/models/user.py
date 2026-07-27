@@ -1,13 +1,13 @@
 from sqlalchemy import String, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.database.alchemy.mixins import LifecycleMixin, SoftDeleteMixin, IDMixin
+from src.database.alchemy.mixins import LifecycleMixin, SoftDeleteMixin, TelegramIDMixin
 from src.database.alchemy.models.base import Base
 
 __all__ = ["User"]
 
 
-class User(Base, IDMixin, LifecycleMixin, SoftDeleteMixin):
+class User(Base, TelegramIDMixin, LifecycleMixin, SoftDeleteMixin):
     __table_args__ = (
         CheckConstraint("length(username) >= 5", name="username_valid"),
     )
@@ -22,6 +22,12 @@ class User(Base, IDMixin, LifecycleMixin, SoftDeleteMixin):
 
     payments: Mapped[list["Payment"]] = relationship(
         "Payment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    promocode_usages: Mapped[list["PromoCodeUsage"]] = relationship(
+        "PromoCodeUsage",
         back_populates="user",
         cascade="all, delete-orphan",
     )

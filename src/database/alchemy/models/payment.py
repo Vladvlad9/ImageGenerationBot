@@ -1,26 +1,18 @@
-from uuid import UUID
-
 from sqlalchemy import BigInteger, ForeignKey, Integer, String, CheckConstraint
-from sqlalchemy import UUID as SQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from uuid_utils import uuid7
 
-from src.database.alchemy.mixins import LifecycleMixin
+from src.database.alchemy.mixins import LifecycleMixin, IDMixin
 from src.database.alchemy.models.base import Base
 
 __all__ = ["Payment"]
 
 
-class Payment(Base, LifecycleMixin):
+class Payment(Base, IDMixin, LifecycleMixin):
     __table_args__ = (
         CheckConstraint("amount >= 0", name="amount_payment_valid"),
     )
 
-    id: Mapped[UUID] = mapped_column(
-        SQLUUID,
-        insert_default=uuid7,
-        primary_key=True,
-    )
+
     user_id: Mapped[int] = mapped_column(
         BigInteger,
         ForeignKey("user.telegram_id", ondelete="CASCADE"),
@@ -39,6 +31,11 @@ class Payment(Base, LifecycleMixin):
     user: Mapped["User"] = relationship(
         "User",
         back_populates="payments",
+    )
+
+    promocode_usages: Mapped[list["PromoCodeUsage"]] = relationship(
+        "PromoCodeUsage",
+        back_populates="payment",
     )
 
     def __repr__(self) -> str:
