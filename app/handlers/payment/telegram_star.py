@@ -1,8 +1,5 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-from app.buttons.constants import ButtonText
 from src.enums import ButtonCallback
 
 router = Router(name='telegram_stars')
@@ -10,11 +7,6 @@ router = Router(name='telegram_stars')
 
 @router.callback_query(F.data == ButtonCallback.TELEGRAM)
 async def buy_tokens(callback: CallbackQuery):
-    # builder = InlineKeyboardBuilder()
-    # builder.button(text="Оплатить", pay=True)
-    # builder.button(text=ButtonText.BACK, callback_data=ButtonCallback.PAYMENTS)
-    # builder.adjust(1)
-
     await callback.message.delete()
     await callback.message.answer_invoice(
         title="Пакет токенов",
