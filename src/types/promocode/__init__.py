@@ -1,6 +1,4 @@
-from src.types.image_generation import ImageGenerationProtocol
-from src.types.keyboards import InlineKeyboardProtocol
-from src.types.promocode import (
+from src.types.promocode.promocode import (
     PromoCodeCreateDTO,
     PromoCodeDTO,
     PromoCodeResponseIdDTO,
@@ -11,8 +9,6 @@ from src.types.promocode import (
 )
 
 __all__ = [
-    "ImageGenerationProtocol",
-    "InlineKeyboardProtocol",
     "PromoCodeResponseIdDTO",
     "PromoCodeDTO",
     "PromoCodeCreateDTO",

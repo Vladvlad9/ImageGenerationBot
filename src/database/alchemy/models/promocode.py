@@ -25,17 +25,18 @@ class PromoCode(Base, IDMixin, LifecycleMixin):
         ),
     )
 
-    code: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False) # сам код, например START100
-    status: Mapped[str] = mapped_column(String(32), default="active", nullable=False) # active, inactive, expired.
+    code: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)  # сам код, например START100
+    status: Mapped[str] = mapped_column(String(32), default="active", nullable=False)  # active, inactive, expired.
 
-    tokens_amount: Mapped[int | None] = mapped_column(Integer) # сколько токенов начислить
+    tokens_amount: Mapped[int | None] = mapped_column(Integer)  # сколько токенов начислить
 
-    max_uses: Mapped[int | None] = mapped_column(Integer) # общий лимит активаций
-    used_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False) # сколько раз уже активировали
-    max_uses_per_user: Mapped[int | None] = mapped_column(Integer, default=1) # сколько раз один пользователь может активировать этот код
+    max_uses: Mapped[int | None] = mapped_column(Integer)  # общий лимит активаций
+    used_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)  # сколько раз уже активировали
+    max_uses_per_user: Mapped[int | None] = mapped_column(Integer,
+                                                          default=1)  # сколько раз один пользователь может активировать этот код
 
-    starts_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True)) # с какого времени работает
-    expires_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True)) # когда истекает
+    starts_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))  # с какого времени работает
+    expires_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True))  # когда истекает
 
     usages: Mapped[list["PromoCodeUsage"]] = relationship(
         "PromoCodeUsage",
@@ -54,12 +55,12 @@ class PromoCode(Base, IDMixin, LifecycleMixin):
 
 
 class PromoCodeUsage(Base, IDMixin, LifecycleMixin):
-    promocode_id: Mapped[UUID] = mapped_column( # какой промокод использовали
+    promocode_id: Mapped[UUID] = mapped_column(  # какой промокод использовали
         SQLUUID,
         ForeignKey("promo_code.id", ondelete="CASCADE"),
         index=True,
     )
-    user_id: Mapped[int] = mapped_column( # кто использовал
+    user_id: Mapped[int] = mapped_column(  # кто использовал
         BigInteger,
         ForeignKey("user.telegram_id", ondelete="CASCADE"),
         index=True,
