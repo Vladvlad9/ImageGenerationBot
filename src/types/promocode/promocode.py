@@ -23,8 +23,6 @@ class PromoCodeDTO(PromoCodeResponseIdDTO):
     type: str
     status: str
     tokens_amount: int | None
-    discount_percent: int | None
-    discount_amount: int | None
     currency: str | None
     max_uses: int | None
     used_count: int
@@ -38,8 +36,6 @@ class PromoCodeCreateDTO(ImmutableDTO):
     type: str = "tokens"
     status: str = "active"
     tokens_amount: int | None = None
-    discount_percent: int | None = None
-    discount_amount: int | None = None
     currency: str | None = None
     max_uses: int | None = None
     max_uses_per_user: int | None = 1
@@ -52,8 +48,6 @@ class PromoCodeUpdateDTO(ImmutableDTO):
     type: str | None = None
     status: str | None = None
     tokens_amount: int | None = None
-    discount_percent: int | None = None
-    discount_amount: int | None = None
     currency: str | None = None
     max_uses: int | None = None
     used_count: int | None = None
