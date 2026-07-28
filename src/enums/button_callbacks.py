@@ -18,3 +18,4 @@ class ButtonCallback(StrEnum):
     TELEGRAM = "telegram_stars"
     CRYPTO = "crypto_payments"
     PROMO_CODE = "promo_code"
+    DONATIONALERTS = "donationalerts"

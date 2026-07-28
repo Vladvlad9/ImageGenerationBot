@@ -15,3 +15,4 @@ class ButtonText:
     TELEGRAM = "⭐ Telegram Stars"
     CRYPTO = "💸 Крипта"
     PROMO_CODE = "🎫 Промокод"
+    DONATIONALERTS = "💷 DonationAlerts"

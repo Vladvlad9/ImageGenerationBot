@@ -18,6 +18,9 @@ def payment_keyboard() -> types.InlineKeyboardMarkup:
                 Button(text=ButtonText.CRYPTO, callback_data=ButtonCallback.CRYPTO),
             ],
             [
+              Button(text=ButtonText.DONATIONALERTS, callback_data=ButtonCallback.DONATIONALERTS),
+            ],
+            [
                 Button(text=ButtonText.PROMO_CODE, callback_data=ButtonCallback.PROMO_CODE),
             ],
             [

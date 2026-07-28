@@ -33,15 +33,14 @@ class Payment(Base, IDMixin, LifecycleMixin):
         back_populates="payments",
     )
 
-    promocode_usages: Mapped[list["PromoCodeUsage"]] = relationship(
-        "PromoCodeUsage",
-        back_populates="payment",
-    )
+    # promocode_usages: Mapped[list["PromoCodeUsage"]] = relationship(
+    #     "PromoCodeUsage",
+    #     back_populates="payment",
+    # )
 
     def __repr__(self) -> str:
         return (
-            f"<Payment(id={self.id}, user_id={self.user_id}, "
-            f"amount={self.amount}, status={self.status})>"
+            f"<Payment(id={self.id}, user_id={self.user_id}, amount={self.amount}, status={self.status})>"
         )
 
     def __str__(self) -> str:
