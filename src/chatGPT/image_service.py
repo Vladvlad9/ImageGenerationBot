@@ -211,21 +211,81 @@ class ImageGenerationService:
             style_image_bytes: bytes,
             style_prompt: str | None = None,
     ) -> bytes:
-        prompt = ("Use the first image with the white background as the base for the composition and visual style. Preserve the white background, black-and-white manga aesthetic, fine ink linework, cross-hatching, contrast, placement of all elements, floating leaves, and the character on the right exactly as they are."
-                  "Replace only the character on the left with the character from the second image with the blue background. Accurately preserve the character’s recognizable design: the elongated white bone-like helmet with horns and sharp projections, light layered armor, long purple ribbons, and the large blade held in their hands. Redraw this character in the highly detailed black-and-white manga style of the first image, using fine ink lines, cross-hatching, and deep black shadows instead of color and glowing effects."
-                  "Place the new character on the left in approximately the same position and at the same scale as the original left character. Show the character in side profile, turned to the right and facing the character on the right. Preserve natural anatomy and the important details of the armor, helmet, ribbons, and weapon. Remove the blue background, colored lighting, smoke, and game-like visual effects from the second image. Do not change anything else in the first image. Wide horizontal composition, high resolution, crisp professional manga illustration."
-                  "Negative prompt: colored image, blue background, purple background, 3D render, video-game graphics, neon glow, blur, altered right character, changed composition, additional characters, extra limbs, deformed hands, incorrect weapon, cropped head, text, logo, watermark.")
+        prompt = (
+            "Use the first image as the source photo and the second image as the style reference. "
+            "Create a new image that keeps every important detail from the source photo: the same "
+            "character identity, face or head shape, pose, clothing, accessories, armor, weapons, "
+            "colors where they matter for recognition, proportions, silhouette, small design marks, "
+            "and overall composition. Render all of those details in the visual style, line quality, "
+            "lighting, texture, mood, and finish of the style reference. Do not simplify the character "
+            "or replace details with generic ones. Do not add text, logos, watermarks, extra people, "
+            "extra limbs, or unrelated objects."
+        )
         if style_prompt:
             prompt = f"{prompt}\nAdditional style instruction: {style_prompt}"
 
-        user_image = BytesIO(image_bytes)
-        user_image.name = "user-image.png"
+        source_image = BytesIO(image_bytes)
+        source_image.name = "source-photo.png"
         style_image = BytesIO(style_image_bytes)
         style_image.name = "style-reference.png"
 
         response = await self._client.images.edit(
             model=self._model,
-            image=[user_image, style_image],
+            image=[source_image, style_image],
+            prompt=prompt,
+            size=self._size,
+            quality=self._quality,
+            output_format="png",
+            n=1,
+        )
+
+        if not response.data or not response.data[0].b64_json:
+            raise RuntimeError("OpenAI API не вернул данные изображения.")
+
+        self._last_usage = response.usage
+        self._last_cost_usd = (
+            _estimate_cost_from_usage(model=self._model, usage=response.usage)
+            or _estimate_cost_per_image(
+                model=self._model,
+                size=self._size,
+                quality=self._quality,
+            )
+        )
+
+        return base64.b64decode(
+            response.data[0].b64_json,
+            validate=True,
+        )
+
+    async def replace_character_with_style(
+            self,
+            base_image_bytes: bytes,
+            character_image_bytes: bytes,
+            style_prompt: str | None = None,
+    ) -> bytes:
+        prompt = (
+            "Use the first image as the base scene, composition, and final visual style. Use the "
+            "second image as the replacement character reference. Replace only the main replaceable "
+            "character in the base scene with the character from the second image. Keep the base "
+            "scene's camera angle, framing, background, lighting style, rendering technique, and all "
+            "other characters or objects unchanged. Preserve the replacement character's recognizable "
+            "details from the second image: identity, silhouette, pose intent, face or head shape, "
+            "clothing, armor, accessories, weapons, color accents needed for recognition, and small "
+            "design marks. Adapt the replacement character naturally into the base scene at the right "
+            "scale, perspective, and style. Do not change anything else in the base image. Do not add "
+            "text, logos, watermarks, extra characters, extra limbs, deformed hands, or unrelated objects."
+        )
+        if style_prompt:
+            prompt = f"{prompt}\nAdditional style instruction: {style_prompt}"
+
+        base_image = BytesIO(base_image_bytes)
+        base_image.name = "base-scene.png"
+        character_image = BytesIO(character_image_bytes)
+        character_image.name = "replacement-character.png"
+
+        response = await self._client.images.edit(
+            model=self._model,
+            image=[base_image, character_image],
             prompt=prompt,
             size=self._size,
             quality=self._quality,
@@ -253,7 +313,7 @@ class ImageGenerationService:
 
 
 def build_image_generation_service(
-        aspect_ratio: str = "1:1",
+        aspect_ratio: str = "auto",
         quality: str = "low",
 ) -> ImageGenerationService:
     return ImageGenerationService(

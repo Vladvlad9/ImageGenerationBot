@@ -54,17 +54,26 @@ async def generate_image_by_style(
         state: FSMContext,
         bot: Bot,
         service: UserServices,
+        session: AsyncSession,
 ) -> None:
     state_data = await state.get_data()
     style_file_id = state_data.get("style_file_id")
-    style_prompt = state_data.get("style_prompt")
 
     if not style_file_id:
         await state.clear()
         await message.answer("Сначала выбери стиль в разделе «Стили работ».")
         return
 
-    status_message = await message.answer("Генерирую изображение в выбранном стиле...")
+    style_service = StyleServices(session=session)
+    style = await style_service.get_by_file_id(file_id=style_file_id)
+    if style is None:
+        await state.clear()
+        await message.answer("Выбранный стиль больше недоступен. Выбери другой стиль.")
+        return
+
+    status_message = await message.answer(
+        "Генерирую изображение: сначала переношу стиль, затем меняю персонажа..."
+    )
 
     try:
         user_photo = message.photo[-1]
@@ -76,7 +85,7 @@ async def generate_image_by_style(
             telegram_id=message.from_user.id,
             telegram_photo_file_id=user_photo.file_id,
             style_file_id=style_file_id,
-            style_prompt=style_prompt,
+            style_prompt=style.prompt,
         )
     except NotEnoughTokensError as e:
         await status_message.edit_text(
@@ -157,7 +166,6 @@ async def show_example_work(
 
     await state.update_data(
         style_file_id=style.file_id,
-        style_prompt=style.prompt,
     )
     await state.set_state(ImageStates.style_photo)
 

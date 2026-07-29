@@ -92,10 +92,21 @@ class StyleImageGenerationService:
                 aspect_ratio=self._get_user_aspect_ratio(user=user),
                 quality=self._get_user_image_quality(user=user),
             )
-            image_bytes = await image_generator.edit_with_style(
+            styled_character_bytes = await image_generator.edit_with_style(
                 image_bytes=user_image_bytes,
                 style_image_bytes=style_image_bytes,
                 style_prompt=style_prompt,
+            )
+            first_generation_cost_usd = image_generator.last_cost_usd
+
+            image_bytes = await image_generator.replace_character_with_style(
+                base_image_bytes=style_image_bytes,
+                character_image_bytes=styled_character_bytes,
+                style_prompt=style_prompt,
+            )
+            total_cost_usd = self._sum_costs(
+                first_generation_cost_usd,
+                image_generator.last_cost_usd,
             )
         except Exception as error:
             refunded_balance = await self._safe_refund_generation_tokens(telegram_id=telegram_id)
@@ -108,7 +119,7 @@ class StyleImageGenerationService:
         return StyleImageGenerationResult(
             image_bytes=image_bytes,
             usage=image_generator.last_usage,
-            cost_usd=image_generator.last_cost_usd,
+            cost_usd=total_cost_usd,
             remaining_token_balance=remaining_token_balance,
         )
 
@@ -163,3 +174,11 @@ class StyleImageGenerationService:
                 telegram_id,
             )
             return None
+
+    @staticmethod
+    def _sum_costs(*costs: float | None) -> float | None:
+        known_costs = [cost for cost in costs if cost is not None]
+        if not known_costs:
+            return None
+
+        return sum(known_costs)

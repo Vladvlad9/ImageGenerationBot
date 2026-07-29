@@ -12,3 +12,11 @@ class ImageGenerationProtocol(Protocol):
             style_prompt: str | None = None,
     ) -> bytes:
         ...
+
+    async def replace_character_with_style(
+            self,
+            base_image_bytes: bytes,
+            character_image_bytes: bytes,
+            style_prompt: str | None = None,
+    ) -> bytes:
+        ...
