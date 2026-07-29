@@ -1,9 +1,10 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.buttons.inline_keyboard.payment import telegram_stars_keyboard
+from app.service.telegram_stars import TelegramStarsServiceController
 from src.enums import ButtonCallback
-from src.services import UserServices
 from src.types.payment_package import TOKEN_PACKAGES_BY_CALLBACK, TOKEN_PACKAGES_BY_PAYLOAD
 
 router = Router(name='telegram_stars')
@@ -38,7 +39,9 @@ async def buy_tokens(callback: CallbackQuery):
 
 @router.pre_checkout_query()
 async def pre_checkout(query: PreCheckoutQuery):
-    if query.currency != "XTR" or query.invoice_payload not in TOKEN_PACKAGES_BY_PAYLOAD:
+    package = TOKEN_PACKAGES_BY_PAYLOAD.get(query.invoice_payload)
+
+    if query.currency != "XTR" or package is None or query.total_amount != package.stars:
         await query.answer(ok=False, error_message="Не удалось проверить платеж.")
         return
 
@@ -46,25 +49,17 @@ async def pre_checkout(query: PreCheckoutQuery):
 
 
 @router.message(F.successful_payment)
-async def successful_payment(message: Message, service: UserServices):
+async def successful_payment(message: Message, session: AsyncSession):
     payment = message.successful_payment
-    package = TOKEN_PACKAGES_BY_PAYLOAD.get(payment.invoice_payload)
 
-    if payment.currency != "XTR" or package is None:
+    if message.from_user is None:
         return
 
-    new_balance = await service.add_tokens(
+    service = TelegramStarsServiceController(session=session)
+    text = await service.apply_payment(
         telegram_id=message.from_user.id,
-        tokens=package.tokens,
+        payment=payment,
     )
-    if new_balance is None:
-        await message.answer("Оплата прошла успешно, но не удалось начислить токены. Напишите в поддержку.")
-        return
 
-    formatted_tokens = f"{package.tokens:,}".replace(",", " ")
-    formatted_balance = f"{new_balance:,}".replace(",", " ")
-    await message.answer(
-        "Оплата прошла успешно.\n\n"
-        f"Начислено: {formatted_tokens} токенов\n"
-        f"Баланс: {formatted_balance} токенов"
-    )
+    if text is not None:
+        await message.answer(text)

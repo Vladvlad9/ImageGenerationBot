@@ -1,5 +1,6 @@
 from src.types.image_generation import ImageGenerationProtocol
 from src.types.keyboards import InlineKeyboardProtocol
+from src.types.payment import TelegramStarsPaymentResultDTO
 from src.types.promocode import (
     PromoCodeCreateDTO,
     PromoCodeDTO,
@@ -16,6 +17,7 @@ from src.types.promocode import (
 __all__ = [
     "ImageGenerationProtocol",
     "InlineKeyboardProtocol",
+    "TelegramStarsPaymentResultDTO",
     "PromoCodeResponseIdDTO",
     "PromoCodeDTO",
     "PromoCodeActivationResultDTO",
