@@ -129,9 +129,9 @@ async def generate_image_by_style(
             f"Готово.\n\n"
             f"Изображение хранится только у тебя в боте, "
             f"после 'Очистки истории' все изображения ПРОПАДУТ.\n\n"
-            f"{format_image_generation_tokens(result.usage)}"
-            f"{format_image_generation_cost(result.cost_usd)}"
-            f"{format_remaining_token_balance(result.remaining_token_balance)}"
+            # f"{format_image_generation_tokens(result.usage)}"
+            # f"{format_image_generation_cost(result.cost_usd)}"
+            # f"{format_remaining_token_balance(result.remaining_token_balance)}"
         ),
     )
     await status_message.delete()
