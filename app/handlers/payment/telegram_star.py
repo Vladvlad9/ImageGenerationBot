@@ -10,10 +10,18 @@ from src.types.payment_package import TOKEN_PACKAGES_BY_CALLBACK, TOKEN_PACKAGES
 router = Router(name='telegram_stars')
 
 
+def _generation_label(generations: int) -> str:
+    if generations % 10 == 1 and generations % 100 != 11:
+        return "генерация"
+    if 2 <= generations % 10 <= 4 and not 12 <= generations % 100 <= 14:
+        return "генерации"
+    return "генераций"
+
+
 @router.callback_query(F.data == ButtonCallback.TELEGRAM)
 async def telegram_stars(callback: CallbackQuery):
     await callback.message.edit_text(
-        text="Выберите пакет токенов",
+        text="Выберите пакет генераций",
         reply_markup=telegram_stars_keyboard(),
     )
     await callback.answer()
@@ -23,14 +31,15 @@ async def telegram_stars(callback: CallbackQuery):
 async def buy_tokens(callback: CallbackQuery):
     package = TOKEN_PACKAGES_BY_CALLBACK[callback.data]
     formatted_tokens = f"{package.tokens:,}".replace(",", " ")
+    generation_title = f"{package.generations} {_generation_label(package.generations)}"
 
     await callback.message.answer_invoice(
-        title=f"{formatted_tokens} токенов",
-        description=f"Покупка {formatted_tokens} токенов для генерации изображений",
+        title=generation_title,
+        description=f"{generation_title} для изображений. На баланс начислится {formatted_tokens} токенов.",
         payload=package.payload,
         currency="XTR",
         prices=[
-            LabeledPrice(label=f"{formatted_tokens} токенов", amount=package.stars),
+            LabeledPrice(label=generation_title, amount=package.stars),
         ],
         provider_token="",
     )

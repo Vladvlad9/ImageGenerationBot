@@ -8,6 +8,14 @@ from src.types.payment_package import TOKEN_PACKAGES
 __all__ = ["payment_keyboard", "telegram_stars_keyboard"]
 
 
+def _generation_label(generations: int) -> str:
+    if generations % 10 == 1 and generations % 100 != 11:
+        return "генерация"
+    if 2 <= generations % 10 <= 4 and not 12 <= generations % 100 <= 14:
+        return "генерации"
+    return "генераций"
+
+
 def payment_keyboard() -> types.InlineKeyboardMarkup:
     return InlineKeyboard(
         buttons=[
@@ -35,7 +43,10 @@ def telegram_stars_keyboard() -> types.InlineKeyboardMarkup:
         buttons=[
             [
                 Button(
-                    text=f"{package.tokens:,} токенов - {package.stars} ⭐".replace(",", " "),
+                    text=(
+                        f"{package.generations} {_generation_label(package.generations)} "
+                        f"- {package.stars} ⭐"
+                    ),
                     callback_data=package.callback_data,
                 )
             ]

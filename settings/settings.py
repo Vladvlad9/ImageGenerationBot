@@ -4,6 +4,7 @@ from typing import Annotated
 from pydantic import Field
 
 from settings._base import BaseSettingsConfig
+from settings.donationalert import DonationalertsSettings
 from settings.storage import StorageSettings
 from settings.database import DataBaseSettings
 from settings.gpt import GPTSettings
@@ -21,6 +22,7 @@ class Settings(BaseSettingsConfig):
     DATABASE: Annotated[DataBaseSettings, Field(default_factory=DataBaseSettings)]
     REDIS: Annotated[RedisSettings, Field(default_factory=RedisSettings)]
     STORAGE: Annotated[StorageSettings, Field(default_factory=StorageSettings)]
+    DONATIONALERTS: Annotated[DonationalertsSettings, Field(default_factory=DonationalertsSettings)]
 
 
 settings = Settings()
