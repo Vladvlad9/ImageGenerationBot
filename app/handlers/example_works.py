@@ -9,7 +9,6 @@ from app.buttons.inline_keyboard import back_keyboard
 from app.buttons.pagination import style_pagination_keyboard
 from app.states import ImageStates
 from settings import settings
-from src.chatGPT.image_service import format_image_generation_tokens, format_image_generation_cost
 from src.enums import ButtonCallback
 from src.services.style import StyleServices
 from src.services.style_image_generation import (
@@ -113,7 +112,7 @@ async def generate_image_by_style(
             )
         await status_message.edit_text(text, reply_markup=back_keyboard())
         return
-    except Exception as e:
+    except Exception:
         logger.exception("Unexpected error in generate_image_by_style: telegram_id=%s", message.from_user.id)
         await status_message.edit_text(
             "Не получилось обработать изображение через ChatGPT. Попробуй чуть позже."
@@ -173,7 +172,7 @@ async def show_example_work(
     photo = await storage.get_file_url(file_id=style.file_id)
 
     caption = style.caption or (
-        "<b>Использовать этот стиль</b>\n"
+        "   <b>Использовать этот стиль</b>\n"
         "⬇️Пришли изображение своего героя⬇️\n\n"
         f"Генерация займет {settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS:,.0f} токенов\n"
     )
