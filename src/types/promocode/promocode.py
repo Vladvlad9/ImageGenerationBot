@@ -1,6 +1,9 @@
 from datetime import datetime
 from uuid import UUID
 
+from pydantic import Field, field_validator
+
+from src.enums import PromoCodeActivationStatus
 from src.types.base import ImmutableDTO
 
 __all__ = [
@@ -8,14 +11,42 @@ __all__ = [
     "PromoCodeDTO",
     "PromoCodeCreateDTO",
     "PromoCodeUpdateDTO",
+    "PromoCodeActivationResultDTO",
     "PromoCodeUsageResponseIdDTO",
     "PromoCodeUsageDTO",
     "PromoCodeUsageCreateDTO",
+    "PromoCodeNameDTO",
+    "PromoCodeUpdateUsedCountDTO",
 ]
+
+
+def normalize_promo_code(value: str) -> str:
+    return str(value).strip().lower()
+
+
+class PromoCodeNameDTO(ImmutableDTO):
+    code: str = Field(
+        ...,
+        min_length=3,
+        max_length=64,
+        description="Уникальный код"
+    )
+
+    @field_validator("code", mode="before")
+    @classmethod
+    def normalize_code(cls, value: str | None) -> str:
+        if value is None:
+            return ""
+
+        return normalize_promo_code(value=value)
 
 
 class PromoCodeResponseIdDTO(ImmutableDTO):
     id: UUID
+
+
+class PromoCodeUpdateUsedCountDTO(PromoCodeResponseIdDTO):
+    used_count: int = Field(default=1, ge=1)
 
 
 class PromoCodeDTO(PromoCodeResponseIdDTO):
@@ -29,6 +60,12 @@ class PromoCodeDTO(PromoCodeResponseIdDTO):
     expires_at: datetime | None
 
 
+class PromoCodeActivationResultDTO(ImmutableDTO):
+    status: PromoCodeActivationStatus
+    promo_code: PromoCodeDTO | None = None
+    tokens_amount: int = 0
+
+
 class PromoCodeCreateDTO(ImmutableDTO):
     code: str
     status: str = "active"
@@ -37,6 +74,11 @@ class PromoCodeCreateDTO(ImmutableDTO):
     max_uses_per_user: int | None = 1
     starts_at: datetime | None = None
     expires_at: datetime | None = None
+
+    @field_validator("code", mode="before")
+    @classmethod
+    def normalize_code(cls, value: str) -> str:
+        return normalize_promo_code(value=value)
 
 
 class PromoCodeUpdateDTO(ImmutableDTO):
@@ -48,6 +90,14 @@ class PromoCodeUpdateDTO(ImmutableDTO):
     max_uses_per_user: int | None = None
     starts_at: datetime | None = None
     expires_at: datetime | None = None
+
+    @field_validator("code", mode="before")
+    @classmethod
+    def normalize_code(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+
+        return normalize_promo_code(value=value)
 
 
 class PromoCodeUsageResponseIdDTO(ImmutableDTO):

@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload
 
 from src.database.alchemy.models import User, UserSettings
 from src.repos.alchemy import UserRepo
-from src.types.user import UserCreateDTO, UserDTO
+from src.types.user import UserCreateDTO, UserDTO, UserUpdateDTO
 from src.types.user.user_settings import UserSettingsCreateDTO
 
 __all__ = ["UserServices"]
@@ -52,8 +52,10 @@ class UserServices:
             print(e)
             # raise InternalServerError(name="User")
 
-    async def update(self):
-        pass
+    async def update(self, data: UserUpdateDTO):
+        filters = [User.telegram_id == data.telegram_id]
+        obj = data.model_dump(exclude_unset=True, exclude_none=True)
+        user = await self._repo.update(obj=obj, filters=filters)
 
     async def delete(self):
         pass
