@@ -174,7 +174,7 @@ async def show_example_work(
 
     caption = style.caption or (
         "<b>Использовать этот стиль</b>\n"
-        "Пришли изображение своего героя\n\n"
+        "⬇️Пришли изображение своего героя⬇️\n\n"
         f"Генерация займет {settings.GPT.MIN_STYLE_IMAGE_GENERATION_TOKENS:,.0f} токенов\n"
     )
     reply_markup = style_pagination_keyboard(current_index=index, total=len(styles))
